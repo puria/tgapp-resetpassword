@@ -30,7 +30,7 @@ setup(
     long_description=README,
     author='Simone Gasbarroni',
     author_email='simone.gasbarroni@gmail.com',
-    url='https://github.com/gasbasd/tgapp-resetpassword',
+    url='https://github.com/axant/tgapp-resetpassword',
     license='MIT',
     keywords='turbogears2.application',
     packages=find_packages(exclude=['ez_setup']),
