@@ -97,4 +97,7 @@ If you no longer wish to make the above change, or if you did not initiate this 
 
         user.password = kw['password']
         flash(_('Password changed successfully'))
-        return redirect('/')
+        if 'redirect_to' in deserialized_data:
+            redirect(deserialized_data['redirect_to'])
+        else:
+            return redirect('/')
