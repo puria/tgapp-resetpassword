@@ -10,7 +10,7 @@ except ImportError:
 
 install_requires=[
     "TurboGears2 >= 2.3.1",
-    "tgext.pluggable",
+    "tgext.pluggable>=0.7.2",
     "tw2.core",
     "tw2.forms >= 2.2.0.3",
     "sprox >= 0.9.1",
@@ -25,7 +25,7 @@ except IOError:
 
 setup(
     name='tgapp-resetpassword',
-    version='0.2.2',
+    version='0.2.3',
     description='Pluggable application for TurboGears2 that permits to change user password or reset it when lost, with sqla and ming compatibility',
     long_description=README,
     author='Simone Gasbarroni',
