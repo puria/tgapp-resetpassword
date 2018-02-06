@@ -2,7 +2,7 @@
 """Main Controller"""
 from datetime import datetime
 from itsdangerous import URLSafeSerializer
-from resetpassword.lib import get_reset_password_form, send_email, get_new_password_form
+from resetpassword.lib import get_reset_password_form, send_email, get_new_password_form, generate_token
 
 from tg import TGController
 from tg import expose, flash, require, url, lurl, request, redirect, validate
@@ -22,13 +22,8 @@ class RootController(TGController):
     @validate(get_reset_password_form(), error_handler=index)
     def reset_request(self, **kw):
         user = model.provider.query(app_model.User, filters=dict(email_address=kw['email_address']))[1][0]
-        password_frag = user.password[0:4]
-        secret = tg.config.get('session.secret', tg.config.get('beaker.session.secret'))
-        serializer = URLSafeSerializer(secret)
-        serialized_data = serializer.dumps(dict(request_date=datetime.utcnow().strftime('%m/%d/%Y %H:%M'),
-                                                email_address=kw['email_address'], password_frag=password_frag))
 
-        password_reset_link = tg.url(self.mount_point + "/change_password/", params=dict(data=serialized_data),
+        password_reset_link = tg.url(self.mount_point + "/change_password/", params=dict(data=generate_token(user)),
                                      qualified=True)
         reset_password_config = tg.config.get('_pluggable_resetpassword_config')
         mail_body = reset_password_config.get('mail_body', _('''
@@ -64,7 +59,7 @@ If you no longer wish to make the above change, or if you did not initiate this 
         if kw.get('data') is None:
             flash(_('Invalid password reset request'), 'error')
             return plug_redirect('resetpassword', '/')
-        
+
         secret = tg.config.get('session.secret', tg.config.get('beaker.session.secret'))
         serializer = URLSafeSerializer(secret)
         deserialized_data = serializer.loads(kw['data'])

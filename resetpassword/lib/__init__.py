@@ -5,8 +5,11 @@ from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
 from smtplib import SMTP
-from tg import config
-from tg import request
+
+from datetime import datetime
+from itsdangerous import URLSafeSerializer
+from tg import config, request
+
 
 try:
     import turbomail
@@ -113,3 +116,13 @@ def send_email(to_addr, sender, subject, body, rich=None):
             mailer.send_immediately(message_to_send)
     else:
         _plain_send_mail(sender, to_addr, subject, body)
+
+
+def generate_token(user, redirect_to='/'):
+    password_frag = user.password[0:4]
+    secret = config.get('session.secret', config.get('beaker.session.secret'))
+    serializer = URLSafeSerializer(secret)
+    serialized_data = serializer.dumps(dict(request_date=datetime.utcnow().strftime('%m/%d/%Y %H:%M'),
+                                            email_address=user.email_address, password_frag=password_frag,
+                                            redirect_to=redirect_to))
+    return serialized_data
