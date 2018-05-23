@@ -1,5 +1,5 @@
 recursive-include resetpassword/public *
 recursive-include resetpassword/templates *.html
 recursive-include resetpassword/templates *.xhtml
+recursive-include resetpassword/i18n *
 global-exclude *.pyc
-
